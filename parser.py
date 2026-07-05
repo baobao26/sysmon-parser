@@ -108,6 +108,21 @@ WRITERS = {
 }
 
 
+# This stats feature is for quick triage to understand what's in a file before deep analysis
+def compute_stats(results: list) -> dict:
+    by_integrity_level = {}
+    for r in results:
+        level = r.get("IntegrityLevel") or "Unknown"
+        by_integrity_level[level] = by_integrity_level.get(level, 0) + 1
+
+    return {
+        "TotalEvents": len(results),
+        "UniqueProcesses": len({r["Image"] for r in results if r.get("Image")}),
+        "UniqueUsers": len({r["User"] for r in results if r.get("User")}),
+        "EventsByIntegrityLevel": by_integrity_level,
+    }
+
+
 def main() -> None:
     arg_parser = argparse.ArgumentParser(description="Extract Sysmon Event ID 1 fields as JSON.")
     arg_parser.add_argument("xml_path", help="Path to an exported Sysmon XML event file")
@@ -130,12 +145,22 @@ def main() -> None:
         default="json",
         help="Output format: json (array, default), jsonl (one JSON object per line), or csv (with headers).",
     )
+    arg_parser.add_argument(
+        "--stats",
+        action="store_true",
+        help="Instead of printing events, print summary statistics (total events, unique processes, "
+        "unique users, events by IntegrityLevel) as JSON. Ignores --format.",
+    )
     args = arg_parser.parse_args()
 
     root = ET.parse(args.xml_path).getroot()
     results = [parsed for event in iter_event_elements(root) if (parsed := parse_event(event)) is not None]
     results = [r for r in results if matches_filters(r, args)]
-    WRITERS[args.format](results)
+
+    if args.stats:
+        print(json.dumps(compute_stats(results), indent=2))
+    else:
+        WRITERS[args.format](results)
 
 
 if __name__ == "__main__":

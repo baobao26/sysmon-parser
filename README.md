@@ -78,6 +78,25 @@ Because these are standard argparse options, a filter value that starts with `-`
 
 Use the `--flag=value` form for any substring that starts with a dash.
 
+## Stats mode
+
+`--stats` prints summary statistics instead of individual events — useful for quick triage of what's in a file before doing deeper analysis. It's computed over the already-filtered result set (so it composes with `--image`/`--user`/`--integrity-level`/`--command-line`), and it ignores `--format` (stats output is always a single JSON object):
+
+```
+python parser.py samples/multi_events.xml --stats
+```
+
+```json
+{
+  "TotalEvents": 3,
+  "UniqueProcesses": 3,
+  "UniqueUsers": 1,
+  "EventsByIntegrityLevel": {
+    "High": 3
+  }
+}
+```
+
 ## Examples
 
 ```
