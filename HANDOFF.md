@@ -7,17 +7,19 @@ A single-file Python CLI (`parser.py`) that extracts Process Creation (Sysmon Ev
 - **Input**: a Sysmon event log already exported to XML (e.g. via `wevtutil` or `Get-WinEvent`) — not a raw `.evtx` file. Two export shapes are handled transparently:
   - a single `<Event>` document as the XML root
   - an `<Events>` wrapper containing multiple `<Event>` children
-- **Output**: a JSON array on stdout, one object per matching event, with these fields: `EventID`, `UtcTime`, `Image`, `CommandLine`, `User`, `IntegrityLevel`, `ParentImage`, `ParentCommandLine`, `Computer`, `Hashes`.
+- **Output**: one entry per matching event, in one of three formats selected by `--format` (default `json`): a JSON array, `jsonl` (one JSON object per line), or `csv` (with a header row). Fields: `EventID`, `UtcTime`, `Image`, `CommandLine`, `User`, `IntegrityLevel`, `ParentImage`, `ParentCommandLine`, `Computer`, `Hashes`.
 - Only events with `EventID == 1` are extracted; other event types (or malformed events missing `System`/`EventData`) are silently skipped.
 - Optional CLI filters narrow the output: `--image` (substring), `--user` (exact), `--integrity-level` (restricted to `High`/`Medium`/`Low`/`System`), `--command-line` (substring, repeatable/OR'd). All text matching is case-insensitive. Different filters combine with AND.
+- `--stats` switches to triage mode: instead of individual events, it prints one JSON object with `TotalEvents`, `UniqueProcesses`, `UniqueUsers`, and `EventsByIntegrityLevel`, computed over the already-filtered result set. It ignores `--format`.
 
 Supporting files:
 - `samples/event1.xml` — a single `whoami.exe` Process Creation event.
 - `samples/multi_events.xml` — a 3-event process chain (`explorer.exe → cmd.exe → powershell.exe -nop -w hidden -ep bypass → certutil.exe -urlcache ...`) wrapped in `<Events>`, used to exercise multi-event parsing and filtering.
-- `README.md` — full CLI usage and filter reference with worked examples.
+- `samples/large_export.xml` — a generated 85-event fixture (80 Event ID 1 events spread across 15 process images and 3 users, evenly split across all 4 integrity levels, plus 5 Event ID 3 network events interleaved to exercise the non-Event-ID-1 skip path) — used to validate `--stats` and `--format` at a larger scale than the hand-written fixtures.
+- `README.md` — full CLI usage, format, and filter reference with worked examples.
 - `.gitignore` — excludes `.claude/settings.local.json` (machine-local permission config) and Python build artifacts.
 
-No external dependencies — standard library only (`argparse`, `json`, `xml.etree.ElementTree`).
+No external dependencies — standard library only (`argparse`, `csv`, `json`, `xml.etree.ElementTree`).
 
 ## How to use it
 
@@ -33,6 +35,9 @@ python parser.py samples/multi_events.xml
 python parser.py samples/multi_events.xml --image powershell
 python parser.py samples/multi_events.xml --user "CONDEF\Administrator"
 python parser.py samples/multi_events.xml --integrity-level high --command-line urlcache --command-line="-nop"
+python parser.py samples/multi_events.xml --format jsonl
+python parser.py samples/multi_events.xml --format csv
+python parser.py samples/large_export.xml --stats
 ```
 
 Note: a filter value starting with `-` (e.g. `-enc`) must be passed as `--command-line="-enc"`, not as a separate argument, or argparse will misread it as a new flag. Full details are in `README.md`.
@@ -59,5 +64,7 @@ Nothing was requested beyond the current scope, but if this project continues, t
 - **Case-insensitive filters, via `.casefold()`.** Confirmed with the user: `Image`, `User`, `IntegrityLevel`, and `CommandLine` filters should all be case-insensitive, matching how Windows itself treats paths and usernames. `.casefold()` was chosen over `.lower()` deliberately for more robust case folding.
 - **`--integrity-level` restricted to 4 known values via a custom `type=` function, not `choices=`.** `argparse`'s built-in `choices=` does exact, case-sensitive matching, which would reject `high`/`HIGH`. A custom `integrity_level_type()` normalizes the input's case first, then validates against the canonical list, giving a clear error message listing valid options.
 - **`--command-line` is repeatable and OR's substrings (`action="append"`), while other filters are single-value and AND together.** This mirrors a natural use case — "match if the command line contains any of these known-suspicious substrings" — without conflating it with the AND-combination semantics across different filter *fields*.
-- **Output is always a JSON array, even for one match or zero matches.** Keeps the output shape consistent regardless of input shape (single `<Event>` vs `<Events>` wrapper) or how many filters narrowed the result, so downstream tooling never needs to special-case "one result" vs "many."
+- **Output is always a JSON array (in `json` mode), even for one match or zero matches.** Keeps the output shape consistent regardless of input shape (single `<Event>` vs `<Events>` wrapper) or how many filters narrowed the result, so downstream tooling never needs to special-case "one result" vs "many."
+- **`--format` adds `jsonl` and `csv` alongside the default `json`, dispatched through a `WRITERS` dict rather than an if/elif chain.** `jsonl` exists for streaming/piping into line-oriented tools (e.g. `grep`, `jq -c` per line) without loading a whole array; `csv` uses `csv.DictWriter` (not manual string joining) so fields containing commas or quotes — notably `Hashes` and quoted `CommandLine` values — are escaped correctly per the CSV spec instead of corrupting the output.
+- **`--stats` is a separate mode, not a `--format` choice.** It answers a different question ("what's in this file") rather than "how do I encode the matched events," and it composes with existing filters (stats over a filtered subset) rather than requiring its own filter logic. Deliberately ignores `--format` since its output is always one JSON object regardless.
 - **`.claude/settings.local.json` is gitignored, not committed.** It's machine-local tool permission config, not project source, so it was excluded from the initial commit via `.gitignore` rather than tracked.
