@@ -2,7 +2,9 @@
 """Extract Process Creation (Event ID 1) fields from an exported Sysmon XML event."""
 
 import argparse
+import csv
 import json
+import sys
 import xml.etree.ElementTree as ET
 
 NS = {"ns": "http://schemas.microsoft.com/win/2004/08/events/event"}
@@ -83,6 +85,29 @@ def matches_filters(event: dict, args: argparse.Namespace) -> bool:
     return True
 
 
+def write_json(results: list) -> None:
+    print(json.dumps(results, indent=2))
+
+
+def write_jsonl(results: list) -> None:
+    for r in results:
+        print(json.dumps(r))
+
+
+def write_csv(results: list) -> None:
+    writer = csv.DictWriter(sys.stdout, fieldnames=FIELDS, lineterminator="\n")
+    writer.writeheader()
+    for r in results:
+        writer.writerow(r)
+
+
+WRITERS = {
+    "json": write_json,
+    "jsonl": write_jsonl,
+    "csv": write_csv,
+}
+
+
 def main() -> None:
     arg_parser = argparse.ArgumentParser(description="Extract Sysmon Event ID 1 fields as JSON.")
     arg_parser.add_argument("xml_path", help="Path to an exported Sysmon XML event file")
@@ -99,12 +124,18 @@ def main() -> None:
         help="Filter to events whose CommandLine contains this substring (case-insensitive). "
         "Repeatable; matches if ANY given substring is found (OR).",
     )
+    arg_parser.add_argument(
+        "--format",
+        choices=list(WRITERS),
+        default="json",
+        help="Output format: json (array, default), jsonl (one JSON object per line), or csv (with headers).",
+    )
     args = arg_parser.parse_args()
 
     root = ET.parse(args.xml_path).getroot()
     results = [parsed for event in iter_event_elements(root) if (parsed := parse_event(event)) is not None]
     results = [r for r in results if matches_filters(r, args)]
-    print(json.dumps(results, indent=2))
+    WRITERS[args.format](results)
 
 
 if __name__ == "__main__":

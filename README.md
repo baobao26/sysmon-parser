@@ -18,9 +18,22 @@ Only events with `EventID == 1` are extracted; other event types in the file are
 
 ## Output
 
-A JSON array to stdout, one object per matching event, with these fields:
+Output goes to stdout, one entry per matching event, with these fields:
 
 `EventID`, `UtcTime`, `Image`, `CommandLine`, `User`, `IntegrityLevel`, `ParentImage`, `ParentCommandLine`, `Computer`, `Hashes`
+
+The output format is controlled by `--format` (default `json`):
+
+| Format | Description |
+| --- | --- |
+| `json` | A single JSON array containing all matching events (default) |
+| `jsonl` | One JSON object per line, newline-delimited — convenient for streaming/piping into other line-oriented tools |
+| `csv` | CSV with a header row; fields containing commas or quotes (e.g. `Hashes`, quoted `CommandLine`) are quoted per standard CSV escaping |
+
+```
+python parser.py samples/multi_events.xml --format jsonl
+python parser.py samples/multi_events.xml --format csv
+```
 
 ## Usage
 
